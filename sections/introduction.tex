@@ -1,0 +1,122 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+\chapter{Introduction}
+\label{cha:Introduction}
+
+Social card games (e.g. Bridge, Rummy, Poker) have been popular in Europe since the 14th century and have hundreds of variations \cite{david_sidney_parlett_oxford_1990}. One of the key reasons behind their popularity is the blend of intellectual stimulation and social entertainment they provide. The games are often a mix of strategy that tests one's skill and chance which adds the excitement element.
+
+A common discussion whilst playing these games is how much skill a player used to win, or if they just "got lucky". The winner will almost certainly declare their skill lead them to victory whilst the losers are sure they just picked up the right card at the right time. This project aims to explore the influences that luck has on a game and how much skill is required to over come a lucky opponent. 
+
+It's important here to differentiate between the two concepts of luck and chance. Chance is the random actor -- when you draw a card of the top of a shuffled deck it's down to chance what you get, it should be completely random. Luck is a curiously human concept that chance events can be impartial \cite{levinson_chance_2001}. Someone might posses "good luck" which skews chance events towards favouring them, or the opposite with "bad luck". In this project we are mainly concerned with good luck or \textit{lucky} events -- those which are perceived to have a positive impact. 
+
+Yaniv is an unusual draw and discard game with some similarities to Rummy. The aim is to reduce the score of the cards in your hand to below a threshold at which point you can call the game and compare you hand to the other players, winning if you score the lowest or receiving a heavy penalty for getting it wrong. There's plenty of opportunity throughout a game for a player to strategise and plan, likewise each time a player draws a card chance comes into play. It offers the perfect environment to analyse skill and luck. 
+
+\note{make sure that these are mentioned}
+\begin{itemize}[nosep]
+    \item what is the challenge
+    \item why its important
+    \item proposed solution
+    \item why its a good solution
+\end{itemize}
+
+\section{Aims and Objectives}
+This project is about exploring luck and skill so it's important to be able to control both of these parameters in either the environment (luck) or players (skill). First we must be able to simulate the game mechanics, and allow for options which manipulate chance, simulating luck. Then we need to create models to play the game. It's possible to synthesise different levels of ability using both heuristics and reinforcement learning techniques. 
+
+With a simulation environment and set of agents we can move onto manipulating chance, forcing unlikely or lucky events to occur to visualise their impact on the game. Doing this throughout a range of skill levels will give us an indication of how skill impacts lucky events. 
+
+To achieve this I followed the following steps:
+\begin{itemize}
+    \item Create an efficient configurable environment that can simulate Yaniv.
+    \item Develop heuristic rule-based agents that mimic human behaviour as skill benchmarks.
+    \item Use Deep Reinforcement Learning methods to train several agents 
+    \item Use the heuristic agents along with the RL agents in a simulation environment to run experiments described in \autoref{method:experiments}.
+\end{itemize}
+
+
+\section{Rules of Yaniv} \label{intro:rules}
+Yaniv can be played by 2 or more people, though is best for 2 or 3. More players slows the game down and can remove some of the more interesting strategies \cite{noauthor_rules_nodate}. 
+
+\subsubsection{Setup}
+Yaniv uses a standard 54 card deck with 2 jokers. Each card is assigned a score: ace is worth 1; number cards are worth their face value; picture cards are worth 10 and jokers score 0. 
+
+5 cards are dealt to each player one at a time. The remaining cards are then placed face down as the draw pile. The top card is turned over and placed next to the draw pile, this forms the discard pile. 
+
+\subsubsection{Play}
+The starting player of the first round is predetermined, in subsequent rounds the player who won the previous round goes first. 
+
+On their turn a player can do one of two things:
+\begin{enumerate}[nosep]
+    \item Discard a combination of cards and pick one up
+    \item Call "Yaniv", ending the game. To call Yaniv the total score of the players hand must be less than 8.
+\end{enumerate}
+
+A player may discard the following:
+\begin{itemize}[nosep]
+    \item Any single card.
+    \item A set of two or more cards of the same rank (eg two 5s, three queens)
+    \item A straight - a sequence of consecutive cards of the same suit. (eg 2, 3, 4 of Clubs). Ace is always low, king is always high and jokers can be used as wildcards.
+\end{itemize}
+
+Once the player has discarded they must pickup one card, either from the top of the draw pile or from the top of the discard pile. If the previous player discarded multiple cards, only the top or bottom of the set may be picked up. Straights must be put down in sequential order, ascending or descending. 
+
+When a player calls Yaniv, they are stating that they have the lowest scoring hand. To call Yaniv a players hand must be less than 8. Once Yaniv is called, the games ends and all the players reveal their cards. If the player who called Yaniv does have the lowest overall score then they win. If the caller doesn't have the lowest score they lose and the player with the lowest score wins. Miss-calling Yaniv is known as an Assaf.
+
+\subsubsection{Scoring}
+
+Scores are then assigned as follows: the winner scores 0; the losers score their hand total; if someone miss-called Yaniv they score 30 points plus the total of their hand. 
+
+Scores are then added to each players total. Any player who has a total greater than 100 is knocked out of the game, and the next round continues with the remaining players. The winner of the game is the last person left with less than 100 points.
+
+There are two extra overall-game mechanics: if a player wins three rounds in a row they score -10; if a player lands on exactly 100 points their overall score is halved to 50.
+
+\subsubsection{Simplified Yaniv}
+\note{needs to go in method}
+
+In order to simplify the process of training RL agents a few changes have been made to the game. First, jokers are removed - keeping them in increases the combinatorial complexity of the game, massively increasing the number of actions an RL agent has to learn which is difficult to deal with using my limited compute resources. 
+
+Second, we're only concerned with rounds, rather than the overall game. The meat of playing Yaniv comes from playing the rounds. There's a bit of meta-game you can play, most of them come down to strategies to hit exactly 100, but again this would increase the state needed represent the game and add complexity without much benefit. 
+
+\section{Research Questions}
+The broad question this project aims to address is \note{idk}
+
+One of the most obvious areas to address is the effect of going first. In Yaniv the starting order is predetermined, either randomly at the start of an overall game or the winner of the previous round starts. Win streaks are fairly common in the overall game, where a player will continue to win many rounds in a row, which begs the question; how much better is it to start a round? 
+
+The first card that is turned over in the game is the top card of the deck after dealing the hands. That means its a random card which is more likely to be desirable than what your opponent will discard, given a players propensity to hold on to low cards. So just how much advantage is gained by having the choice of the first card? \cref{hyp:going-first} aims to test this.
+
+\stepcounter{hyp-counter}
+\begin{hyp} \label{hyp:going-first}
+Going first increases the likelihood of winning the game.
+\end{hyp}
+
+As skill increases an agents ability to exploit lucky events should increase, but also their ability to defend against a lucky opponent. Therefore it is important to investigate the effects of lucky events over a set of skill levels which \cref{hyp:first-overtime,hyp:class-overtime} aim to do. 
+
+\begin{hyp} \label{hyp:first-overtime}
+As an agents skill increases the effect of going first decreases. 
+\end{hyp}
+
+There are \numprint{2598960} possible 5 card hand configurations. Some of these are better to start with than others. As in poker, Yaniv hands can be broken down into classes, based on what they contain, they are detailed along with their frequency in \autoref{tab:hand-classes}. 
+
+Likewise, each starting hand can be scored using the Yaniv rules described in \autoref{intro:rules}. \autoref{fig:startinghand-probs} shows the probability of being dealt a hand of a certain score.
+
+There is a clear advantage to starting with a hand score below 8; it means you can call Yaniv immediately. There are 32 5-card hand combinations which score below 8 which means if you're dealt one there's a 99.9988\% chance that  your opponent has a score >8 which means you can call the game and will likely win. 
+
+Since the goal in Yaniv is to reduce the number of points in your hand to less than 8 it follows that starting with fewer points in your hand will increase your chances of winning, which is what \cref{hyp:hand-score} aims to test.
+
+\stepcounter{hyp-counter}
+\begin{hyp} \label{hyp:hand-score}
+Starting with a lower hand score will increase your chances of winning. 
+\end{hyp}
+
+Similarly starting a game with a combination of cards that you can put down immediately should have a positive impact on your chances of winning. One of the most basic and neccessary strategies in Yaniv is to collect combinations of cards which you can discard next turn, reducing the overall number of cards in your hand. It's a quick and effective way to reduce your score, so starting with a combination you can put down at the start of the game will give you an advantage. This is what \cref{hyp:hand-class} aims to test. 
+
+\begin{hyp} \label{hyp:hand-class}
+Starting with a larger legal discard combination combination in your hand will increase your chances of winning.
+\end{hyp}
+
+As with \cref{hyp:first-overtime}, \cref{hyp:class-overtime} aims to test how the effect of these events changes with an agents skill level. A more skilled opponent might be able to take better advantage of starting with a pair, eventually building it into a bigger combination. Likewise a skilled opponent should be able to neutralise some of the effects that starting with a better combination gives. 
+
+\begin{hyp} \label{hyp:class-overtime}
+As an agents skill increases, its ability to exploit better starting hands increases.
+\end{hyp}
+
+\end{document}

@@ -1,0 +1,94 @@
+\documentclass[../main.tex]{subfiles}
+
+\begin{document}
+\chapter{Related Work}
+\label{cha:RelatedWork}
+
+Artificial intelligence (AI) in games has seen significant advances in recent years. With the advent of deep reinforcement learning, AI researchers have been able to achieve superhuman performance in a large number of game spaces. In particular games with perfect information have been subject to success - those where the entire game state is visible to each player. In 2016 DeepMind \cite{silver_mastering_2016} mastered the game of Go, previously held as one of the greatest challenges in AI due to the large intractable search space. They used neural networks to approximate the value of the board state and search techniques select the next move. With this technique, AlphaGo was able to defeat the Go world champion Lee Sedol. 
+
+AlphaGo learned the game by playing games with both professional and amateur players, acquiring human domain knowledge. In 2017 DeepMind published a new algorithm, AlphaGo Zero, which required zero domain knowledge \cite{silver_mastering_2017}. It learned only by playing games with itself (self-play.) The new approach was able to outperform AlphaGo. Later DeepMind \cite{silver_mastering_2017-1} was able to generalise the approach to Chess and Shogi achieving similarly groundbreaking results. 
+
+Imperfect information games, those where only part of the state is visible to each player, present a different challenge. Any player that wants to do well in these games will have to be able to reason about the hidden state. In games likes Poker and other card games this explodes the combinatorial complexity. Recent advances have made good progress on this though. Facebook recently released ReBeL a generalised self-play RL+search framework that converges to a Nash equilibrium in two-player zero-sum games \cite{brown_combining_2020}. 
+
+
+\section{Challenges} \label{challenges}
+\begin{itemize}[nosep]
+    \item \textbf{Imperfect Information}: An player has access to a limited subset of the current game sate, i.e., the cards in their hand and the cards on the discard pile. 
+    \item \textbf{Multi-agent}: Yaniv is a multi-player game. Using an MDP would require the other players to be part of the environment rather than separate entities interacting with the environment \cite{littman_markov_1994}. This means that any opponent is stationary. 
+   \item \textbf{Large State and Action Space}
+   \item \textbf{Sparse Rewards}
+   \item \textbf{Multiple Turn Phases}: Needs to learn 3 tasks: whether to yaniv, what to discard, and what to pick up
+\end{itemize}
+
+\section{Reinforcement Learning}
+Reinforcement learning (RL) is learning through interaction. The learning agent interacts with its environment, observes the results of its actions, and then can learn to change its behaviour based on the reward given to it. This is essentially trial-and-error learning and is similar on the way children learn to interact with the world \cite{sutton_reinforcement_2018}.
+
+Reinforcement learning is a framework for solving optimisation problems. The typical RL problem can be described as a control loop where the agent learns from interacting with an environment, receiving state descriptions and rewards in order to make decisions which lead to the maximum expected reward \cite{mnih_human-level_2015}. The agent observes a state $s_t$ at timestep $t$, then interacts with the environment by taking an action $a_t$. This leads to a new state $s_{t+1}$ and the environment generates a reward $r_{t+1}$. 
+
+\subsection{Markov Decision Process}
+The environment that an RL agent interacts with is usually formed as a Markov decision process (MDP) \cite{hazeghi_markov_1995}. MDPs are a mathematical model for sequential decision making and control problems. A finite MDP can be defined by the 5-tuple $\langle \mathcal{S, A, P , R, } \gamma \rangle$ where:
+\begin{itemize}[nosep]
+    \item $\statespace$ is the set of all possible possible states, where $s_t \in \statespace$ represents the state of the environment at timestep $t$.
+    \item $\actionspace$ is the set of all possible actions in the environment. $\actionspace_t \subset \actionspace$ is the subset of actions which are legal at time $t$.
+    \item $\transfunc$ is the state transition probability function. $\transfunc(s_{t+1} \vert s_t, a_t) \in [0, 1]$, where $s_t, s_{t+
+    1} \in \statespace$ and $a_t \in \actionspace$. It defines the probability of going to state $s_{t+1}$ form state $s_t$ after doing an action $a_t$.
+    \item $\reward$ is the reward function which maps the immediate reward an agent will receive after doing an action $a_t$ in state $s_t$ and transitioning to state $s_{t+1}$. $\reward(s_t, a_t, s_{t+1}) \in \mathbb{R}$
+    \item $\gamma \in [0, 1]$ is the reward discount factor. Which is the relationship between future and immediate rewards. If $\gamma = 1$ all rewards future are considered equally to the present reward, if $\gamma = 0$ then the agent only considers the present reward \cite{sutton_policy_2000}.
+\end{itemize}
+
+Solving an MDP yields a policy $\pi : \statespace \rightarrow \actionspace$ which maps states to actions. An optimal policy $\pi^*$ is a policy which maximises the expected return \eqref{eqn:cumul-reward} for every state \cite{silver_lectures_2015}. A common technique to solve MDPs is the value iteration algorithm \cite{bellman_markovian_1957}, which requires a complete representation of the states, actions, rewards, and transitions of the environment. Often this information is difficult or impossible to obtain. To solve this RL algorithms learn by interacting with the environment, gathering experience as they go \cite{sutton_reinforcement_2018}. 
+
+\begin{equation}
+G_t = r_{t+1} + \gamma r_{t+2} + ... = \sum_{k=0}^{\infty} \gamma^k r_{t+k+1}
+\label{eqn:cumul-reward}
+\end{equation}
+
+In order for a problem to be described by an MDP it must satisfy the Markov property, i.e., the future depends only on the current state and action, not the past. Many problems don't satisfy this constraint, including Yaniv. There are extensions and modifications to the MDP which are able to model many different environments.
+
+To fully model Yaniv an extensive-form game can be used. It is able to model the challenges mentioned in \cref{challenges} \cite{jiang_deltadou_2019, heinrich_deep_2016}. The model is grounded in game theory and allows for multi-agent, partially observable games. 
+
+\subsection{RL methods}
+The aim of any RL algorithm is to learn an optimal policy for an environment. That is a policy that maximises the value of every state. There are many different approaches to this using RL. Many factors should be considered when choosing the right RL algorithm, such as the size and shape of the state and action space (continuous vs. discrete actions), computational resources available, and even the expert human data available. 
+
+RL algorithms learn on trajectories, that is the sequences of state, action and reward through an episode. The difference between on and off-policy algorithms is how they generate the trajectories learned on:
+
+\begin{itemize}
+    \item  On policy algorithms use the policy that is learning to sample actions which means that the RL algorithm uses the current iteration of the policy to generate the trajectories that are fed into the algorithm to learn. 
+    \item  Off policy algorithms use trajectories generated by a different policy to the one being trained. This might be another policy specifically designed to explore the useful parts of the state space or trajectories pre-generated from some other source, like human expert play. 
+\end{itemize}
+
+The trade-off between on and off policy is mostly sample efficiency. On policy learning has to always generate new samples and so has a low sample efficiency. This can be a positive as it means more stability since the algorithm directly tries to optimise the policy's performance. With off-policy learning, you can reuse old samples which means algorithms can achieve a much higher sample efficiency \cite{sutton_reinforcement_2018}. 
+
+% Popular on-policy algorithms include: Asynchronous Advantage Actor Critic (A3C) \cite{mnih_asynchronous_2016}, Trust Region Policy Optimisation (TRPO) \cite{schulman_trust_2017}, Proximal Policy Optimisation (PPO) \cite{schulman_proximal_2017}.
+
+% Popular off-policy algorithms include: Deep Deterministic Policy Gradient (DDPG) \cite{lillicrap_continuous_2019}, Deep Q-Network (DQN) \cite{silver_mastering_2016}, Soft Actor Critic \cite{haarnoja_soft_2018}.
+
+Most RL algorithms either use a value or policy-based approach, or a mix of the two. Value-based algorithms learn a value function that approximates the value of the current state and use that to derive their policy. Q-learning is similar in that the function being optimised is the value of a given state-action pair, $Q(s, a)$ \cite{watkins_q-learning_1992}. The actions to be taken is calculated by:
+$$
+a(s) = \arg\!\max_{a} Q(s,a)
+$$
+
+Policy-only and value-only based algorithms both have serious downsides that make them difficult to scale to complex environments. In 2000 Konda and Tsitsiklis \cite{konda_actor-critic_2000} summarised their drawbacks:
+
+\begin{itemize}
+  \item  Policy-only algorithms estimate the gradient of the policy's performance and update in the direction of improvement. Gradient estimators have may have a large variance which causes instability. Policy updates are calculated independently from previous updates which means there is no learning done on previously acquired information. 
+  \item  Value-only algorithms use all resources to calculate a value function which is then used to generate an optimal policy which is an indirect way of getting a policy. 
+\end{itemize}
+
+Actor-critic (mixed policy and value) methods aim to overcome some of the weaknesses of using a policy only or value only method. The actor refers to the policy and the critic refers to the value function approximation. It's often the case that the actor and critic will share the same neural network \cite{mnih_asynchronous_2016}. 
+
+\note{lots to do here ...}
+
+\subsection{Synthesis}
+\note{from James:}
+\begin{itemize}
+    \item finish with synthesis section
+    \item what all the rl research means in terms of ynaiv
+    \item highlight the gap
+    \begin{itemize}
+        \item that is using rl for yaniv
+        \item and using rl as a continous measure of skill
+    \end{itemize}
+\end{itemize}
+
+\end{document}

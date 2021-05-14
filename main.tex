@@ -1,0 +1,101 @@
+\documentclass{UoYCSproject}
+
+
+\addbibresource{references.bib}
+\author{Rory Anderson}
+\title{Reinforcement learning in the card game Yaniv}
+%\date{Version 3.0, 2020-November}
+\supervisor{James Walker}
+\BSc
+
+
+% \acknowledgements{
+%   I would like to thank my goldfish for all the help it gave me
+%   writing this document.
+ 
+%   As usual, my boss was an inspiring source of sagacious advice.
+% }
+
+% More definitions & declarations in example.ldf
+
+\usepackage{multirow}
+% \usepackage{svg}
+% \svgpath{./images/}
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily,
+  columns=fullflexible,
+}
+\usepackage{textcomp}
+\usepackage{color}
+\newcommand\note[1]{\textcolor{red}{\textbf{#1}}}
+
+\usepackage{csquotes}
+\usepackage{enumitem}
+\usepackage{numprint}
+\npthousandsep{,}
+\newcommand\minus{\texttt{-}}
+\newcommand\pos{\texttt{+}}
+
+% \usepackage[medium,compact]{titlesec}
+% \titlespacing*{\section}{0pt}{*0.8}{*0.8}
+% \titlespacing*{\subsection}{0pt}{*0.8}{*0.8}
+% \titlespacing*{\subsubsection}{0pt}{*0.3}{*0.3}
+
+\lstMakeShortInline[breaklines=true]|
+\usepackage{booktabs}
+\usepackage{graphicx}
+\graphicspath{{./images/}}
+\usepackage{mathtools}          %loads amsmath as well
+\DeclarePairedDelimiter\Floor\lfloor\rfloor
+\DeclarePairedDelimiter\Ceil\lceil\rcei
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\usepackage{caption}
+\usepackage{subcaption}
+
+\usepackage[nameinlink,capitalize]{cleveref}
+
+\newcommand\statespace{\mathcal{S}}
+\newcommand\actionspace{\mathcal{A}}
+\newcommand\transfunc{\mathcal{P}}
+\newcommand\reward{\mathcal{R}}
+\newcommand\discount{\mathcal{\gamma}}
+
+\usepackage{amsthm}
+\newcounter{hyp-counter}
+\newtheorem{hyp}{Hypothesis}[hyp-counter]
+% \crefname{hyp}{hypothesis}{hypothesis}
+\crefname{hyp}{Hypothesis}{Hypotheses}
+
+% \usepackage{fdsymbol}
+% \newcommand*\Hs[1]{{\color{red}#1}\ensuremath{{\color{red}\varheartsuit}}}
+% \newcommand*\Ss[1]{#1\ensuremath{{\color{black}\spadesuit}}}
+% \newcommand*\Ds[1]{#1\ensuremath{{\color{red}\vardiamondsuit}}}
+% \newcommand*\Cs[1]{#1\ensuremath{{\color{black}\clubsuit}}}
+
+\usepackage{subfiles}
+\begin{document}
+\pagenumbering{roman}
+
+\maketitle
+\listoffigures
+\listoftables
+%\renewcommand*{\lstlistlistingname}{List of Listings}
+%\lstlistoflistings
+
+\begin{summary}
+\end{summary}
+
+\subfile{sections/introduction}
+
+\subfile{sections/related_work}
+
+\subfile{sections/method}
+
+\subfile{sections/results}
+% \appendix
+% \chapter{Some appendix}
+
+\printbibliography
+\end{document}
