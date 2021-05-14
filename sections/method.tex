@@ -3,9 +3,9 @@
 \begin{document}
 \chapter{Methodology}
 \label{cha:Methodology}
+In this chapter I describe in detail the steps outlined in \cref{intro:aims}. In \cref{method:implementation} I discuss the method used and decisions made to create the environment and agents required. In \cref{method:experiments} I discuss the experiments designed to test the hypotheses outlined in \cref{intro:reserach-qs}. 
 
-
-\section{Implementation}
+\section{Implementation} \label{method:implementation}
 \subsection{Simulation Environment}
 Any game is interacted with through a series of actions and observations. A player will make an observation, then take an action that results in a new observation. This cycle is implemented for Yaniv in the |yaniv_rl/game| module in a series of Python classes. 
 
@@ -22,13 +22,20 @@ discarded single card the two pick up actions are synonymous.
 
 
 \subsection{Heuristic Agents} \label{method:rule_agents}
-\note{from James: Need to describe why I have picked these three agents. What is the use? I think mainly it comes down to three different skill levels. Random: no skill, novice: just picked up the game, intermediate: basic strategy. The skill levels help benchmark the RL agent}
+One of the important questions in \cref{intro:reserach-qs} is how skill effects luck, and how different events change with more or less able players. In order to fully test the differences in skill it's important to be able to simulate different levels of ability. One way to do that is to craft heuristic agents based on human knowledge. 
 
-Yaniv is a relatively new game with a small player base and so there are no available baselines to test our reinforcement learning agents' performance against. To remedy this I have created 3 rule-based agents to benchmark performance:
+To do this I have created three simple agents. The first is a random action agent which takes random legal actions. This simulates a player with no skill, they only know the rules of the game (i.e. what actions they're allowed to take) but cannot use strategy.
 
+Next is the novice agent, which aims to simulate a new player who has just learned the rules and the basic objective. Often when a new player picks up the game they just put down the highest scoring card in their hand and don't think about making card combinations. While it's possible to win like this, its inefficient.
+
+Finally, the intermediate agent, which implements the basic strategy in Yaniv, which is to build combinations of cards -- even if that means your hand score will temporarily increase. This simulates a player with a few games of experience, they understand the importance of building multiple card combinations but lack further strategy. 
+
+Another important reason for the heuristic agents is to benchmark the RL agent as it trains. Yaniv is a relatively new game with a small player base and so there are no available baselines to test our reinforcement learning agents' performance against.
+
+The strategies for the three agents are outlined below:
 \begin{enumerate}
     \item \textbf{Random Action}: Uniformly samples legal actions.
-    \item \textbf{Novice Strategy}: Always call Yaniv if the action is available. Discard the highest scoring combination of cards. If the available discard is less than 2 pick it up otherwise draw from the deck. 
+    \item \textbf{Novice Strategy}: Always call Yaniv if the action is available. Discard the highest scoring combination of cards. If the available discard is less than 2, pick it up otherwise draw from the deck. 
     \item \textbf{Intermediate Strategy}: Checks to see if picking up from the discard pile will increase the number of cards that can be discarded next turn. If so pick the highest scoring discard combination that doesn't include the cards used for next turns combinations. Otherwise, act like the novice strategy. 
     \begin{itemize}
         \item This strategy aims to reduce the number of cards in its hand as quickly as possible, usually by making pairs. 
@@ -71,22 +78,22 @@ Opponent Hand Sizes & (n-1) * 6  & One-hot encoding of opponent hand size       
                     & 58n + 80   &                                                \\ \bottomrule                       
 \end{tabular}%
 }
-\caption{Yaniv State Encoding}
+\caption{The Yaniv State Encoding.}
 \label{tab:state-enc}
 \end{table}
 
 In two-player the state vector is of length 196 and in three-player it is 254. It is also possible for an agent trained in three-player to play in two-player games as the inputs for the second opponent are ignored and set to zero. Likewise for a two-player trained agent. 
 
-The current hand, dead cards and known cards are encoded in a vector of length 52, where all inputs are zero unless the card id is present in the feature. The discards are encoded in a two-plane vector, one for the rank and one for the suit and then concatenated. This state representation was chosen as it includes most of the information that goes into making a decision in Yaniv in a compact way. 
+The current hand, dead cards and known cards are encoded in a vector of length 52, where all inputs are zero unless the card ID is present in the feature. The discards are encoded in a two-plane vector, one for the rank and one for the suit and then concatenated. This state representation was chosen as it includes most of the information that goes into making a decision in Yaniv in a compact way. 
 
 \subsubsection{Action Representation}
 \note{from James: add figs to help show action repr}
 
-As Yaniv is a multi-phase game it is important to decide how the agent will interact with the model. It can either do its two actions sequentially, ie calling step with the discard action, then receiving a new observation and calling step again with the pickup action. Or it can take two actions at once, telling the environment to step with both its discard and pick up action. 
+As Yaniv is a multi-phase game it is important to decide how the agent will interact with the model. It can either do its two actions sequentially, i.e. calling step with the discard action, then receiving a new observation and calling step again with the pickup action. Or it can take two actions at once, telling the environment to step with both its discard and pick up action. 
 
-The output of the policy network is the same length as the number of actions. Its normalised by a |softmax| function, so the output is a list of probabilities each one corresponding to a distinct action. 
+The output of the policy network is the same length as the number of actions. It's normalised by a |softmax| function, so the output is a list of probabilities each one corresponding to a distinct action. 
 
-To implement the second action representation you have to create a separate action for each combination of discard and pickup, ie the cross product of the discard action and the pickup actions. The Yaniv action is still a separate action. This means that the total number of actions is now almost tripled to \numprint{1462}. This causes the algorithm to train far slower as shown in \autoref{fig:multi_vs_single_actions}.
+To implement the second action representation you have to create a separate action for each combination of discard and pickup, i.e. the cross product of the discard action and the pickup actions. The Yaniv action is still a separate action. This means that the total number of actions is now almost tripled to \numprint{1462}. This causes the algorithm to train far slower as shown in \autoref{fig:multi_vs_single_actions}.
 
 \begin{figure}
     \centering
@@ -112,7 +119,7 @@ r = \begin{cases}
 \label{eqn:reward_1}
 \end{equation}
 
-The reward described in \eqref{eqn:reward_1} is proportional to the scores at the end of the hand. The losers of the game score their hand divided by the cutoff variable and the winner scores the absolute value of the minimum reward. The score cutoff is set at 30. The aim of an agent is to maximise the score of the opponent, whilst minimising its own score. Losing by -2 has far less impact on the overall game than losing by -20. This reward scheme tries to incentivize agents to cause their opponent to lose by as large a score as possible, whilst minimizing its own losses, either by winning or scoring low.
+The reward described in \eqref{eqn:reward_1} is proportional to the scores at the end of the hand. The losers of the game score their hand divided by the cut-off variable and the winner scores the absolute value of the minimum reward. The score cut-off is set at 30. The aim of an agent is to maximise the score of the opponent, whilst minimising its own score. Losing by -2 has far less impact on the overall game than losing by -20. This reward scheme tries to incentivize agents to cause their opponent to lose by as large a score as possible, whilst minimizing its own losses, either by winning or scoring low.
 
 \begin{figure}
     \centering

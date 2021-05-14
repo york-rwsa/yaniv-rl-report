@@ -5,11 +5,11 @@
 
 Social card games (e.g. Bridge, Rummy, Poker) have been popular in Europe since the 14th century and have hundreds of variations \cite{david_sidney_parlett_oxford_1990}. One of the key reasons behind their popularity is the blend of intellectual stimulation and social entertainment they provide. The games are often a mix of strategy that tests one's skill and chance which adds the excitement element.
 
-A common discussion whilst playing these games is how much skill a player used to win, or if they just "got lucky". The winner will almost certainly declare their skill lead them to victory whilst the losers are sure they just picked up the right card at the right time. This project aims to explore the influences that luck has on a game and how much skill is required to over come a lucky opponent. 
+A common discussion whilst playing these games is how much skill a player used to win, or if they just "got lucky". The winner will almost certainly declare their skill lead them to victory whilst the losers are sure they just picked up the right card at the right time. This project aims to explore the influences that luck has on a game and how much skill is required to overcome a lucky opponent. 
 
-It's important here to differentiate between the two concepts of luck and chance. Chance is the random actor -- when you draw a card of the top of a shuffled deck it's down to chance what you get, it should be completely random. Luck is a curiously human concept that chance events can be impartial \cite{levinson_chance_2001}. Someone might posses "good luck" which skews chance events towards favouring them, or the opposite with "bad luck". In this project we are mainly concerned with good luck or \textit{lucky} events -- those which are perceived to have a positive impact. 
+It's important here to differentiate between the two concepts of luck and chance. Chance is the random actor -- when you draw a card of the top of a shuffled deck it's down to chance what you get, it should be completely random. Luck is a curiously human concept that chance events can be impartial \cite{levinson_chance_2001}. Someone might possess "good luck" which skews chance events towards favouring them, or the opposite with "bad luck". In this project we are mainly concerned with good luck or \textit{lucky} events -- those which are perceived to have a positive impact. 
 
-Yaniv is an unusual draw and discard game with some similarities to Rummy. The aim is to reduce the score of the cards in your hand to below a threshold at which point you can call the game and compare you hand to the other players, winning if you score the lowest or receiving a heavy penalty for getting it wrong. There's plenty of opportunity throughout a game for a player to strategise and plan, likewise each time a player draws a card chance comes into play. It offers the perfect environment to analyse skill and luck. 
+Yaniv is an unusual draw and discard game with some similarities to Rummy. The aim is to reduce the score of the cards in your hand to below a threshold at which point you can call the game and compare you hand to the other players, winning if you score the lowest or receiving a heavy penalty for getting it wrong. There's plenty of opportunity throughout a game for a player to strategize and plan, likewise each time a player draws a card chance comes into play. It offers the perfect environment to analyse skill and luck. 
 
 \note{make sure that these are mentioned}
 \begin{itemize}[nosep]
@@ -19,10 +19,10 @@ Yaniv is an unusual draw and discard game with some similarities to Rummy. The a
     \item why its a good solution
 \end{itemize}
 
-\section{Aims and Objectives}
-This project is about exploring luck and skill so it's important to be able to control both of these parameters in either the environment (luck) or players (skill). First we must be able to simulate the game mechanics, and allow for options which manipulate chance, simulating luck. Then we need to create models to play the game. It's possible to synthesise different levels of ability using both heuristics and reinforcement learning techniques. 
+\section{Aims and Objectives} \label{intro:aims}
+This project is about exploring luck and skill, so it's important to be able to control both of these parameters in either the environment (luck) or players (skill). First we must be able to simulate the game mechanics, and allow for options which manipulate chance, simulating luck. Then we need to create models to play the game. It's possible to synthesize different levels of ability using both heuristics and reinforcement learning techniques. 
 
-With a simulation environment and set of agents we can move onto manipulating chance, forcing unlikely or lucky events to occur to visualise their impact on the game. Doing this throughout a range of skill levels will give us an indication of how skill impacts lucky events. 
+With a simulation environment and set of agents we can move onto manipulating chance, forcing unlikely or lucky events to occur to visualize their impact on the game. Doing this throughout a range of skill levels will give us an indication of how skill impacts lucky events. 
 
 To achieve this I followed the following steps:
 \begin{itemize}
@@ -76,22 +76,22 @@ In order to simplify the process of training RL agents a few changes have been m
 
 Second, we're only concerned with rounds, rather than the overall game. The meat of playing Yaniv comes from playing the rounds. There's a bit of meta-game you can play, most of them come down to strategies to hit exactly 100, but again this would increase the state needed represent the game and add complexity without much benefit. 
 
-\section{Research Questions}
+\section{Research Questions} \label{intro:reserach-qs}
 The broad question this project aims to address is \note{idk}
 
 One of the most obvious areas to address is the effect of going first. In Yaniv the starting order is predetermined, either randomly at the start of an overall game or the winner of the previous round starts. Win streaks are fairly common in the overall game, where a player will continue to win many rounds in a row, which begs the question; how much better is it to start a round? 
 
-The first card that is turned over in the game is the top card of the deck after dealing the hands. That means its a random card which is more likely to be desirable than what your opponent will discard, given a players propensity to hold on to low cards. So just how much advantage is gained by having the choice of the first card? \cref{hyp:going-first} aims to test this.
+The first card that is turned over in the game is the top card of the deck after dealing the hands. That means it's a random card which is more likely to be desirable than what your opponent will discard, given a players propensity to hold on to low cards. So just how much advantage is gained by having the choice of the first card? \cref{hyp:going-first} aims to test this.
 
 \stepcounter{hyp-counter}
 \begin{hyp} \label{hyp:going-first}
 Going first increases the likelihood of winning the game.
 \end{hyp}
 
-As skill increases an agents ability to exploit lucky events should increase, but also their ability to defend against a lucky opponent. Therefore it is important to investigate the effects of lucky events over a set of skill levels which \cref{hyp:first-overtime,hyp:class-overtime} aim to do. 
+As skill increases an agent's ability to exploit lucky events should increase, but also their ability to defend against a lucky opponent. Therefore, it is important to investigate the effects of lucky events over a set of skill levels which \cref{hyp:first-overtime,hyp:class-overtime} aim to do. 
 
 \begin{hyp} \label{hyp:first-overtime}
-As an agents skill increases the effect of going first decreases. 
+As an agent's skill increases the effect of going first decreases. 
 \end{hyp}
 
 There are \numprint{2598960} possible 5 card hand configurations. Some of these are better to start with than others. As in poker, Yaniv hands can be broken down into classes, based on what they contain, they are detailed along with their frequency in \autoref{tab:hand-classes}. 
@@ -107,16 +107,16 @@ Since the goal in Yaniv is to reduce the number of points in your hand to less t
 Starting with a lower hand score will increase your chances of winning. 
 \end{hyp}
 
-Similarly starting a game with a combination of cards that you can put down immediately should have a positive impact on your chances of winning. One of the most basic and neccessary strategies in Yaniv is to collect combinations of cards which you can discard next turn, reducing the overall number of cards in your hand. It's a quick and effective way to reduce your score, so starting with a combination you can put down at the start of the game will give you an advantage. This is what \cref{hyp:hand-class} aims to test. 
+Similarly, starting a game with a combination of cards that you can put down immediately should have a positive impact on your chances of winning. One of the key strategies in Yaniv is to collect combinations of cards, so that you can discard multiple cards at once. Each time you discard you only pick up one card, so discarding multiple cards is an efficient way to reduce your hand score. Starting with a combination in your hand is a bonus as it means you're immediately able to reduce the number of cards in your hand. \cref{hyp:hand-class} aims to test the effect this has on a player's success.
 
 \begin{hyp} \label{hyp:hand-class}
-Starting with a larger legal discard combination combination in your hand will increase your chances of winning.
+Starting with a larger legal discard combination in your hand will increase your chances of winning.
 \end{hyp}
 
-As with \cref{hyp:first-overtime}, \cref{hyp:class-overtime} aims to test how the effect of these events changes with an agents skill level. A more skilled opponent might be able to take better advantage of starting with a pair, eventually building it into a bigger combination. Likewise a skilled opponent should be able to neutralise some of the effects that starting with a better combination gives. 
+As with \cref{hyp:first-overtime}, \cref{hyp:class-overtime} aims to test how the effect of these events changes with an agent's skill level. A more skilled opponent might be able to take better advantage of starting with a pair, eventually building it into a bigger combination. Likewise, a skilled opponent should be able to neutralise some of the effects that starting with a better combination gives. 
 
 \begin{hyp} \label{hyp:class-overtime}
-As an agents skill increases, its ability to exploit better starting hands increases.
+As an agent's skill increases, its ability to exploit better starting hands increases.
 \end{hyp}
 
 \end{document}

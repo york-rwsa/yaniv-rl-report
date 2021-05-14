@@ -1,0 +1,12 @@
+{
+    "[latex]": {
+        "editor.wordWrap" : "on",
+        "editor.formatOnPaste": false,
+        "editor.suggestSelection": "recentlyUsedByPrefix"
+    },
+    "latex-workshop.view.pdf.viewer": "tab",
+    "editor.minimap.enabled": false,
+    "latex-workshop.latex.autoBuild.run": "onSave",
+    "ltex.language": "en-GB",
+    "latex-workshop.latex.rootFile.useSubFile": false
+}
