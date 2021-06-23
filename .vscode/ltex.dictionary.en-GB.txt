@@ -2,3 +2,16 @@ Yaniv
 RLlib
 hyperparameters
 hyperparameter
+AlphaGo
+Sedol
+ReBeL
+acheive
+MDPs
+TRPO
+DDPG
+DQN
+Konda
+Tsitsiklis
+RLCard
+OpenSpeil
+LTSM

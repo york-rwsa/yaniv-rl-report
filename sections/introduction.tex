@@ -7,17 +7,19 @@ Social card games (e.g. Bridge, Rummy, Poker) have been popular in Europe since 
 
 A common discussion whilst playing these games is how much skill a player used to win, or if they just "got lucky". The winner will almost certainly declare their skill lead them to victory whilst the losers are sure they just picked up the right card at the right time. This project aims to explore the influences that luck has on a game and how much skill is required to overcome a lucky opponent. 
 
-It's important here to differentiate between the two concepts of luck and chance. Chance is the random actor -- when you draw a card of the top of a shuffled deck it's down to chance what you get, it should be completely random. Luck is a curiously human concept that chance events can be impartial \cite{levinson_chance_2001}. Someone might possess "good luck" which skews chance events towards favouring them, or the opposite with "bad luck". In this project we are mainly concerned with good luck or \textit{lucky} events -- those which are perceived to have a positive impact. 
+It's important here to differentiate between the two concepts of luck and chance. Chance is the random actor -- when you draw a card off the top of a shuffled deck it's down to chance what you get, it should be completely random. Luck is the human concept that chance events can be impartial \cite{levinson_chance_2001}. Someone might possess "good luck" which skews chance events towards favouring them, or the opposite with "bad luck". In this project we are mainly concerned with good luck or \textit{lucky} events -- those which are perceived to have a positive impact. 
 
 Yaniv is an unusual draw and discard game with some similarities to Rummy. The aim is to reduce the score of the cards in your hand to below a threshold at which point you can call the game and compare you hand to the other players, winning if you score the lowest or receiving a heavy penalty for getting it wrong. There's plenty of opportunity throughout a game for a player to strategize and plan, likewise each time a player draws a card chance comes into play. It offers the perfect environment to analyse skill and luck. 
 
-\note{make sure that these are mentioned}
-\begin{itemize}[nosep]
-    \item what is the challenge
-    \item why its important
-    \item proposed solution
-    \item why its a good solution
-\end{itemize}
+Reinforcement learning (RL) is a hot topic in the world of AI and has seen a recent explosion in development. Its aim is to solve sequential decision-making problems. Games are a very common test bed for reinforcement learning algorithms, as they've often been extensively studied and are rigorously defined \cite{ye_towards_2020}. As an RL agent learns to play a game its skill at the game can be said to increase. I will use this along with several heuristic agents as variable skilled agents. 
+
+% \note{make sure that these are mentioned}
+% \begin{itemize}[nosep]
+%     \item what is the challenge
+%     \item why its important
+%     \item proposed solution
+%     \item why its a good solution
+% \end{itemize}
 
 \section{Aims and Objectives} \label{intro:aims}
 This project is about exploring luck and skill, so it's important to be able to control both of these parameters in either the environment (luck) or players (skill). First we must be able to simulate the game mechanics, and allow for options which manipulate chance, simulating luck. Then we need to create models to play the game. It's possible to synthesize different levels of ability using both heuristics and reinforcement learning techniques. 
@@ -29,12 +31,13 @@ To achieve this I followed the following steps:
     \item Create an efficient configurable environment that can simulate Yaniv.
     \item Develop heuristic rule-based agents that mimic human behaviour as skill benchmarks.
     \item Use Deep Reinforcement Learning methods to train several agents 
-    \item Use the heuristic agents along with the RL agents in a simulation environment to run experiments described in \autoref{method:experiments}.
+    \item Use the heuristic agents along with the RL agents in a simulation environment to run experiments described in \cref{method:experiments}.
 \end{itemize}
 
+% RL offers an opportunity to simulate how a human might learn the game and skill improves as they collect experience. This gives a continuously improving skill, which can be taken at intervals and used as skil
 
 \section{Rules of Yaniv} \label{intro:rules}
-Yaniv can be played by 2 or more people, though is best for 2 or 3. More players slows the game down and can remove some of the more interesting strategies \cite{noauthor_rules_nodate}. 
+Yaniv can be played by 2 or more people, though is best for 2 or 3. More players slow the game down and can remove some of the more interesting strategies \cite{noauthor_rules_nodate}. 
 
 \subsubsection{Setup}
 Yaniv uses a standard 54 card deck with 2 jokers. Each card is assigned a score: ace is worth 1; number cards are worth their face value; picture cards are worth 10 and jokers score 0. 
@@ -47,7 +50,7 @@ The starting player of the first round is predetermined, in subsequent rounds th
 On their turn a player can do one of two things:
 \begin{enumerate}[nosep]
     \item Discard a combination of cards and pick one up
-    \item Call "Yaniv", ending the game. To call Yaniv the total score of the players hand must be less than 8.
+    \item Call "Yaniv", ending the game. To call Yaniv the total score of the player's hand must be less than 8.
 \end{enumerate}
 
 A player may discard the following:
@@ -59,25 +62,17 @@ A player may discard the following:
 
 Once the player has discarded they must pickup one card, either from the top of the draw pile or from the top of the discard pile. If the previous player discarded multiple cards, only the top or bottom of the set may be picked up. Straights must be put down in sequential order, ascending or descending. 
 
-When a player calls Yaniv, they are stating that they have the lowest scoring hand. To call Yaniv a players hand must be less than 8. Once Yaniv is called, the games ends and all the players reveal their cards. If the player who called Yaniv does have the lowest overall score then they win. If the caller doesn't have the lowest score they lose and the player with the lowest score wins. Miss-calling Yaniv is known as an Assaf.
+When a player calls Yaniv, they are stating that they have the lowest scoring hand. To call Yaniv a player's hand must be less than 8. Once Yaniv is called, the games ends and all the players reveal their cards. If the player who called Yaniv does have the lowest overall score then they win. If the caller doesn't have the lowest score they lose and the player with the lowest score wins. Miss-calling Yaniv is known as an Assaf.
 
 \subsubsection{Scoring}
-
 Scores are then assigned as follows: the winner scores 0; the losers score their hand total; if someone miss-called Yaniv they score 30 points plus the total of their hand. 
 
-Scores are then added to each players total. Any player who has a total greater than 100 is knocked out of the game, and the next round continues with the remaining players. The winner of the game is the last person left with less than 100 points.
+Scores are then added to each player's total. Any player who has a total greater than 100 is knocked out of the game, and the next round continues with the remaining players. The winner of the game is the last person left with less than 100 points.
 
 There are two extra overall-game mechanics: if a player wins three rounds in a row they score -10; if a player lands on exactly 100 points their overall score is halved to 50.
 
-\subsubsection{Simplified Yaniv}
-\note{needs to go in method}
-
-In order to simplify the process of training RL agents a few changes have been made to the game. First, jokers are removed - keeping them in increases the combinatorial complexity of the game, massively increasing the number of actions an RL agent has to learn which is difficult to deal with using my limited compute resources. 
-
-Second, we're only concerned with rounds, rather than the overall game. The meat of playing Yaniv comes from playing the rounds. There's a bit of meta-game you can play, most of them come down to strategies to hit exactly 100, but again this would increase the state needed represent the game and add complexity without much benefit. 
-
 \section{Research Questions} \label{intro:reserach-qs}
-The broad question this project aims to address is \note{idk}
+The broad question this project aims to address is how much skill impacts lucky events and vice versa. It will give players the tools to know whether their opponent did just \textit{get lucky}, or if they showed superior skill. 
 
 One of the most obvious areas to address is the effect of going first. In Yaniv the starting order is predetermined, either randomly at the start of an overall game or the winner of the previous round starts. Win streaks are fairly common in the overall game, where a player will continue to win many rounds in a row, which begs the question; how much better is it to start a round? 
 
@@ -94,9 +89,9 @@ As skill increases an agent's ability to exploit lucky events should increase, b
 As an agent's skill increases the effect of going first decreases. 
 \end{hyp}
 
-There are \numprint{2598960} possible 5 card hand configurations. Some of these are better to start with than others. As in poker, Yaniv hands can be broken down into classes, based on what they contain, they are detailed along with their frequency in \autoref{tab:hand-classes}. 
+There are \numprint{2598960} possible 5 card hand configurations. Some of these are better to start with than others. As in poker, Yaniv hands can be broken down into classes, based on what they contain, they are detailed along with their frequency in \cref{tab:hand-classes}. 
 
-Likewise, each starting hand can be scored using the Yaniv rules described in \autoref{intro:rules}. \autoref{fig:startinghand-probs} shows the probability of being dealt a hand of a certain score.
+Likewise, each starting hand can be scored using the Yaniv rules described in \cref{intro:rules}. \cref{fig:startinghand-probs} shows the probability of being dealt a hand of a certain score.
 
 There is a clear advantage to starting with a hand score below 8; it means you can call Yaniv immediately. There are 32 5-card hand combinations which score below 8 which means if you're dealt one there's a 99.9988\% chance that  your opponent has a score >8 which means you can call the game and will likely win. 
 

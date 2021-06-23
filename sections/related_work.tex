@@ -4,7 +4,7 @@
 \chapter{Related Work}
 \label{cha:RelatedWork}
 
-Artificial intelligence (AI) in games has seen significant advances in recent years. With the advent of deep reinforcement learning, AI researchers have been able to achieve superhuman performance in a large number of game spaces. In particular games with perfect information have been subject to success - those where the entire game state is visible to each player. In 2016 DeepMind \cite{silver_mastering_2016} mastered the game of Go, previously held as one of the greatest challenges in AI due to the large intractable search space. They used neural networks to approximate the value of the board state and search techniques select the next move. With this technique, AlphaGo was able to defeat the Go world champion Lee Sedol. 
+Artificial intelligence (AI) in games has seen significant advances in recent years. With the advent of deep reinforcement learning, AI researchers have been able to achieve superhuman performance in many game spaces. In particular games with perfect information have been subject to success -- those where the entire game state is visible to each player. In 2016 DeepMind \cite{silver_mastering_2016} mastered the game of Go, previously held as one of the greatest challenges in AI due to the large intractable search space. They used neural networks to approximate the value of the board state and search techniques select the next move. With this technique, AlphaGo was able to defeat the Go world champion Lee Sedol. 
 
 AlphaGo learned the game by playing games with both professional and amateur players, acquiring human domain knowledge. In 2017 DeepMind published a new algorithm, AlphaGo Zero, which required zero domain knowledge \cite{silver_mastering_2017}. It learned only by playing games with itself (self-play.) The new approach was able to outperform AlphaGo. Later DeepMind \cite{silver_mastering_2017-1} was able to generalise the approach to Chess and Shogi achieving similarly groundbreaking results. 
 
@@ -12,23 +12,25 @@ Imperfect information games, those where only part of the state is visible to ea
 
 
 \section{Challenges} \label{challenges}
+Before looking closely at the related RL literature, it is worth noting the challenges that creating a successful RL agent in Yaniv poses. 
+
 \begin{itemize}[nosep]
-    \item \textbf{Imperfect Information}: An player has access to a limited subset of the current game sate, i.e., the cards in their hand and the cards on the discard pile. 
+    \item \textbf{Imperfect Information}: A player has access to a limited subset of the current game sate, i.e., the cards in their hand and the cards on the discard pile. A successful agent must be able to reason about unknown states. 
     \item \textbf{Multi-agent}: Yaniv is a multi-player game. Using an MDP would require the other players to be part of the environment rather than separate entities interacting with the environment \cite{littman_markov_1994}. This means that any opponent is stationary. 
-   \item \textbf{Large State and Action Space}
-   \item \textbf{Sparse Rewards}
-   \item \textbf{Multiple Turn Phases}: Needs to learn 3 tasks: whether to yaniv, what to discard, and what to pick up
+    \item \textbf{Large State and Action Space}: Due to the combinatorial nature of card games the action and state spaces are much larger than the classic environments that RL have had successes in \cite{jiang_deltadou_2019}.
+    \item \textbf{Sparse Rewards}: In Yaniv, your actions do not have immediate consequences -- only at the end of the round do you find out whether you win. So the learner has to figure out what series of actions lead to the reward at the end of the round, whether picking up that card 6 turns ago was a good choice or not. 
+    \item \textbf{Multiple Turn Phases}: Needs to learn 3 tasks: whether to Yaniv, what to discard, and what to pick up.
 \end{itemize}
 
 \section{Reinforcement Learning}
 Reinforcement learning (RL) is learning through interaction. The learning agent interacts with its environment, observes the results of its actions, and then can learn to change its behaviour based on the reward given to it. This is essentially trial-and-error learning and is similar on the way children learn to interact with the world \cite{sutton_reinforcement_2018}.
 
-Reinforcement learning is a framework for solving optimisation problems. The typical RL problem can be described as a control loop where the agent learns from interacting with an environment, receiving state descriptions and rewards in order to make decisions which lead to the maximum expected reward \cite{mnih_human-level_2015}. The agent observes a state $s_t$ at timestep $t$, then interacts with the environment by taking an action $a_t$. This leads to a new state $s_{t+1}$ and the environment generates a reward $r_{t+1}$. 
+Reinforcement learning is a framework for solving optimisation problems. The typical RL problem can be described as a control loop where the agent learns from interacting with an environment, receiving state descriptions and rewards in order to make decisions which lead to the maximum expected reward \cite{mnih_human-level_2015}. The agent observes a state $s_t$ at time step $t$, then interacts with the environment by taking an action $a_t$. This leads to a new state $s_{t+1}$ and the environment generates a reward $r_{t+1}$. 
 
 \subsection{Markov Decision Process}
-The environment that an RL agent interacts with is usually formed as a Markov decision process (MDP) \cite{hazeghi_markov_1995}. MDPs are a mathematical model for sequential decision making and control problems. A finite MDP can be defined by the 5-tuple $\langle \mathcal{S, A, P , R, } \gamma \rangle$ where:
+The environment that an RL agent interacts with is usually formed as a Markov decision process (MDP) \cite{littman_markov_1994}. MDPs are a mathematical model for sequential decision-making and control problems. A finite MDP can be defined by the 5-tuple $\langle \mathcal{S, A, P , R, } \gamma \rangle$ where:
 \begin{itemize}[nosep]
-    \item $\statespace$ is the set of all possible possible states, where $s_t \in \statespace$ represents the state of the environment at timestep $t$.
+    \item $\statespace$ is the set of all possible states, where $s_t \in \statespace$ represents the state of the environment at time step $t$.
     \item $\actionspace$ is the set of all possible actions in the environment. $\actionspace_t \subset \actionspace$ is the subset of actions which are legal at time $t$.
     \item $\transfunc$ is the state transition probability function. $\transfunc(s_{t+1} \vert s_t, a_t) \in [0, 1]$, where $s_t, s_{t+
     1} \in \statespace$ and $a_t \in \actionspace$. It defines the probability of going to state $s_{t+1}$ form state $s_t$ after doing an action $a_t$.
@@ -59,9 +61,9 @@ RL algorithms learn on trajectories, that is the sequences of state, action and 
 
 The trade-off between on and off policy is mostly sample efficiency. On policy learning has to always generate new samples and so has a low sample efficiency. This can be a positive as it means more stability since the algorithm directly tries to optimise the policy's performance. With off-policy learning, you can reuse old samples which means algorithms can achieve a much higher sample efficiency \cite{sutton_reinforcement_2018}. 
 
-% Popular on-policy algorithms include: Asynchronous Advantage Actor Critic (A3C) \cite{mnih_asynchronous_2016}, Trust Region Policy Optimisation (TRPO) \cite{schulman_trust_2017}, Proximal Policy Optimisation (PPO) \cite{schulman_proximal_2017}.
+Popular on-policy algorithms include: Asynchronous Advantage Actor Critic (A3C) \cite{mnih_asynchronous_2016}, Trust Region Policy Optimisation (TRPO) \cite{schulman_trust_2017}, Proximal Policy Optimisation (PPO) \cite{schulman_proximal_2017}.
 
-% Popular off-policy algorithms include: Deep Deterministic Policy Gradient (DDPG) \cite{lillicrap_continuous_2019}, Deep Q-Network (DQN) \cite{silver_mastering_2016}, Soft Actor Critic \cite{haarnoja_soft_2018}.
+Popular off-policy algorithms include: Deep Deterministic Policy Gradient (DDPG) \cite{lillicrap_continuous_2019}, Deep Q-Network (DQN) \cite{silver_mastering_2016}, Soft Actor Critic \cite{haarnoja_soft_2018}.
 
 Most RL algorithms either use a value or policy-based approach, or a mix of the two. Value-based algorithms learn a value function that approximates the value of the current state and use that to derive their policy. Q-learning is similar in that the function being optimised is the value of a given state-action pair, $Q(s, a)$ \cite{watkins_q-learning_1992}. The actions to be taken is calculated by:
 $$
@@ -71,24 +73,43 @@ $$
 Policy-only and value-only based algorithms both have serious downsides that make them difficult to scale to complex environments. In 2000 Konda and Tsitsiklis \cite{konda_actor-critic_2000} summarised their drawbacks:
 
 \begin{itemize}
-  \item  Policy-only algorithms estimate the gradient of the policy's performance and update in the direction of improvement. Gradient estimators have may have a large variance which causes instability. Policy updates are calculated independently from previous updates which means there is no learning done on previously acquired information. 
+  \item  Policy-only algorithms estimate the gradient of the policy's performance and update in the direction of improvement. Gradient estimators have may have a large variance which causes instability. Policy updates are calculated independently of previous updates which means there is no learning done on previously acquired information. 
   \item  Value-only algorithms use all resources to calculate a value function which is then used to generate an optimal policy which is an indirect way of getting a policy. 
 \end{itemize}
 
-Actor-critic (mixed policy and value) methods aim to overcome some of the weaknesses of using a policy only or value only method. The actor refers to the policy and the critic refers to the value function approximation. It's often the case that the actor and critic will share the same neural network \cite{mnih_asynchronous_2016}. 
+Actor-critic (mixed policy and value) methods aim to overcome some weaknesses of using a policy only or value only method. The actor refers to the policy and the critic refers to the value function approximation. It's often the case that the actor and critic will share the same neural network \cite{mnih_asynchronous_2016}. 
 
-\note{lots to do here ...}
 
-\subsection{Synthesis}
-\note{from James:}
-\begin{itemize}
-    \item finish with synthesis section
-    \item what all the rl research means in terms of ynaiv
-    \item highlight the gap
-    \begin{itemize}
-        \item that is using rl for yaniv
-        \item and using rl as a continous measure of skill
-    \end{itemize}
-\end{itemize}
+\subsection{RL in Imperfect Information Games}
+Many card games have imperfect information, including Yaniv. It's a challenge in AI research as any successful agent must be able to reason about information it doesn't have access to. The hidden states mean that game tree traversal is difficult as there needs to be a separate branch for each possible state \cite{seitz_learning_nodate}. 
+
+RLCard and OpenSpeil are both reinforcement learning toolkits which are designed to aid in game AI research \cite{zha_rlcard_2020, lanctot_openspiel_2020}. Neither of these toolkits implement Yaniv. 
+
+Successful agents in card games require some domain knowledge and often include some sort of search, either at the training or evaluation state \cite{shi_scrofazero_2021,brown_combining_2020,brown_superhuman_2018}. 
+
+Model and search free approaches have also seen some success. Charlesworth 2018 \cite{charlesworth_application_2018} trains an agent using PPO on the trick taking game Big 2. 
+
+\subsection{Self-play} \label{litrev:self-play}
+Multiagent online reinforcement learning requires trajectories to be gathered whilst training the agent. In a multiagent setting the opponents to the learning agent are important. In order to learn successful the agent needs to face correct challenge for its current skill level \cite{hernandez_comparison_2020,heinrich_deep_2016}. Imagine if you just learned the rules of a game, and your only opponent was an expert, or if you are an intermediate player and can only face a novice -- the experience you can gather is less valuable than playing someone of a similar skill level. 
+
+It's important to match the level of skill between opponents during training. One easy way to achieve this is with self play: the opponents are played by the learning agent. That is, the same policy is used to generate actions for each player -- this is known as naive self play \cite{hernandez_comparison_2020}. 
+
+There are different approaches to self play, which centre around how the opponent's policies are sampled. In naive self play the opponent is just the most recent version of the learning agent. A more sophisticated approach is to sample historical policies. This is ensures that the agent doesn't \textit{forget} strategies \cite{bansal_emergent_2018}.
+
+\section{Synthesis}
+% \note{from James:}
+% \begin{itemize}
+%     \item finish with synthesis section
+%     \item what all the rl research means in terms of ynaiv
+%     \item highlight the gap
+%     \begin{itemize}
+%         \item that is using rl for yaniv
+%         \item and using rl as a continous measure of skill
+%     \end{itemize}
+% \end{itemize}
+
+Reinforcement learning continues to grow and tackles a constantly evolving pool of challenges. This project aims to add a new environment and baselines to test new RL algorithms against. Yaniv is particularly interesting due to its large state and action space, and the possible depth of strategy. An intermediate player can make decisions based on an instant observation, but to really master the game you need to use the game history to reason about your opponent's hand and what might still be in the deck. Yaniv offers the scope that a good RL environment should. 
+
+The main goal of this project is to further understand Yaniv, and the balance of luck and skill in the game. Using RL it's possible to model an improving player and run simulations using agents of different skill levels. There is no research on the game of Yaniv. 
 
 \end{document}

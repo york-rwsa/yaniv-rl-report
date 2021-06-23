@@ -1,0 +1,27 @@
+\documentclass[../main.tex]{subfiles}
+
+\begin{document}
+\begin{summary}
+
+Yaniv is a complex, fast, and fun card game played throughout the world. Its design allows for rich strategy and the thrill of taking chances. Often while playing the game, conversations about the level of skill really required to play Yaniv well, or if it is indeed just luck. 
+
+This project addresses the question through a series of experiments which explore the effect chance events have on the game. First we look at the effect starting a round has, then the effects that starting a round with a specific hand or set of hands has. 
+
+To explore these questions required a simulation environment with several agents which could play the game and simulate different levels of skill. I implemented two agents based on human strategies -- a novice and an intermediate player. I also created an environment in which to train a reinforcement learning agent -- essentially an AI which learns to play the game through trail and error. This agent was used as a measure of continuously increasing skill. 
+
+I hypothesised that a player's level of skill would have an impact on the effects of the chance events. A strong player might be able to better exploit a good hand, conversely a good player should also be better able to defend against their opponent getting a good hand. This interplay was explored using the RL model's historical save-files -- as the agent trained it saves a copy of itself at intervals. The idea behind this is to have a continuous measure of increasing skill: as an RL agent trains, it gets better at the game. 
+
+I found that starting a round does have a positive impact on a player's win rate, though it varies from player to player and their opponent. In self-play (when an agent plays a copy of themselves) the player going first was able to win about 6\% more games. 
+
+The story was similar with starting hands. I broke them down into classes of hands, like 4 of a kind, or full house (similar to Poker). I found that starting with a bigger combination of cards in your hand lead to better chances of winning, up to a 90\% win rate for a 5 card straight. But this was highly dependent on strategy. The intermediate agent was designed to put down the largest discard it could, and so took full advantage of the 5 card straight, whereas the RL model hadn't encountered enough 5 card straights in training to know what to do with it. 
+
+Finally, I used the RL models to conduct the same experiments but over the training life of the agent, to try and see the effect that skill had on these lucky events. The results, whilst interesting, were inconclusive. I discovered skill, win rate, and strategy were all part of the puzzle. Some strategies might win more games, but also score more points (which is bad), and others might win fewer but get less penalties. Likewise, some strategies are good at dealing with different parts of the game.
+
+% \note{maybe more idk}
+
+This project contributes a new environment and several baseline agents for developing and evaluating new and existing reinforcement learning algorithms. Further work would look at improving the RL agent's performance and introducing new heuristic agents. 
+
+This project does not use animal or human participants, so there are limited ethical implications. The method and implementation have been checked against the ACM code of ethics and the University of York code of practice on research integrity. 
+
+\end{summary}
+\end{document}

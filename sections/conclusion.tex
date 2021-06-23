@@ -3,16 +3,62 @@
 \chapter{Conclusion}
 \label{cha:Conclusion}
 
-\begin{itemize}
-    \item reinforcement learning is a good tool to learn strategy
-    \item
-    \item future work
-    \begin{itemize}
-        \item theory of mind
-        \item counter and understand other players strategy
-        \item use search
-        \item take it to full yaniv with overall game
-    \end{itemize}
-\end{itemize}
+% \begin{itemize}
+%     \item this work has contributed:
+%     \begin{itemize}
+%         \item yaniv environment
+%         \item yaniv reinforcement learning baseline
+%         \item heuristic agent baselines
+%         \item understanding of the effect different events have on the outcome of a player
+%     \end{itemize}   
+
+%     \item reinforcement learning is a good tool to learn strategy
+%     \item analyse the emergent behaviour
+%     \item use search along with an rl model
+%     \item future work
+%     \begin{itemize}
+%         \item theory of mind
+%         \item counter and understand other players strategy
+%         \item use search
+%         \item take it to full yaniv with overall game
+%     \end{itemize}
+% \end{itemize}
+
+This project aimed to explore the relationship between luck and skill in the card game Yaniv. Through a series of research questions we looked at the effects that certain luck based events had on the game  -- going first, and starting with a specific hand.
+
+\section{Implications of Results}
+The results detailed in \cref{cha:Results} give a clearer picture on the effects of some luck based events in Yaniv.
+
+We were able to show that starting a round does increase the chances of winning it (\cref{hyp:going-first}). However, we weren't able to conclusively show that skill increased the effects (\cref{hyp:first-overtime}). That said it was clear that the opponent the increase was not constant. It changed with each match-up of agents. The largest changes were seen in self-play when the two agents had the same level of skill (on average winning about a 6\% more games). I suspect this is because one's win rate is harder to increase the higher it is. 
+
+Next we looked at the effects of starting with a specific set of cards in your hand. We showed that starting with a smaller total hand score did increase your chances of winning (up to 100\% wins.) However, we also discovered that starting with a hand score of over 40 gave increasing odds of winning. We hypothesised that this is because to make the higher score hands you need more card combos which can be put down together. It is clear that there is a relationship between starting hand score and win rate, though it is not strictly linear. So, as long as your starting hand is not within the range 30-40 then you stand better than average odds of winning. 
+
+Finally, we investigated the effect of starting with a specific combination of cards in your hand, like a four of a kind. Using the intermediate agent it was clear that the more cards included in a combination the better the win rate. However, the results from the RL model in self play showed that it had not learned to deal with the less probable cases and wasn't able to exploit the five card straight as well as the intermediate agent. So it is difficult to accept \cref{hyp:hand-class} as it's dependent on strategy. For the intermediate agent it is true, but not for the RL model. 
+
+Likewise with it is difficult to show that this effect increases with an increase in skill (\cref{hyp:class-overtime}). Using the win rate as the only measure of skill, then the RL model was more skilled than the intermediate model, but could not take full advantage of some of the higher order hand classes. This shows that skill level is more nuanced than just win rate. 
+
+In any case, it's clear that starting with hand that has some combination increases your odds of winning. Starting with a hand that has nothing in it gives only a 40\% chance of winning.
+
+All the conclusions drawn have the base assumption that the agent plays rationally with the most basic aim of reducing one's hand score to the Yaniv threshold. The random action agent -- takes a random legal action at each step -- doesn't see significant change when going first. 
+
+\section{Success of the Project and Contributions}
+The main goal to explore luck and skill in Yaniv was achieved, with multiple experiments being run. 
+
+In order to meet the main aim I set several smaller objectives listed in \cref{intro:aims}. I successfully created a highly configurable full Yaniv simulator, that can be used in further AI research. Along with this I created 2 rule based agents which mimic human play. These can be used as benchmarks for any further AI research. Finally, I designed a configurable environment to train RL agents in, which achieved a good win rate over the heuristic agents. 
+
+Overall the implementation of the project was successful, though the experiments designed had limitations and were based on the assumption that an RL agent could be used as a continuous measure of skill. Further work needs to be done to quantify what skill means in Yaniv and how it effects luck. 
+
+Though the objectives were successfully met, it was difficult to fully realise the aim of exploring luck and skill together. It is clear that the two concepts are more nuanced winning performance. We observed the effects of luck and skill independently, which gave a picture as to how they might interact but were not able to draw concrete conclusions. 
+
+\section{Further Work}
+One major shortcoming of the RL agent was the lack of forward planning. The agent is based only on an MLP network, which has no time element. Incorporating an LTSM network or some other temporal mechanism could greatly improve performance. Another way to improve the agent would be to add some form of search for action selection both during training and evaluation. This would increase the forward planning ability of the agent. 
+
+The RL models were all trained with limited resources and could do with more training time and proper hyperparameter tuning. With more compute resources it would be possible to train agents on the entire game, rather than the slightly simplified version described in \cref{method:implementation}. Adding Jokers in adds some complexity to the action and state space. 
+
+Evaluating and training agents to play the overall game also offers opportunity for further study. Training an agent to reliably hit certain scores, in order to hit 100 points for a bonus, would be a challenging task. 
+
+In order to play Yaniv well, an agent needs to reason about the mental state of their opponents and their possible strategy. Training an agent with a theory of mind to make assumptions about a players' evolving \cite{fuchs_theory_2021}. It is possible to foil an opponent's strategy by holding on to cards you suspect they need. Likewise, it is important to make estimations about an opponent's hand \cite{mishra_opponent_nodate}.
+
+More rigorous statistical analysis needs to be done in order to gain a fuller understanding of luck and skill in the Game \cite{guo_distinguishing_2019}. 
 
 \end{document}

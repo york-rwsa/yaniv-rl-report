@@ -8,5 +8,6 @@
     "editor.minimap.enabled": false,
     "latex-workshop.latex.autoBuild.run": "onSave",
     "ltex.language": "en-GB",
-    "latex-workshop.latex.rootFile.useSubFile": false
+    "latex-workshop.latex.rootFile.useSubFile": false,
+    "files.autoSave": "afterDelay"
 }

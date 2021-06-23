@@ -1,3 +1,9 @@
 {"rule":"CD_NN","sentence":"^\\QClass Description Example Frequency 5S 5 card straight C2 C3 C4 C5 C6 36 4K 4 of a kind C2 H2 S2 D2 C7 624 4S 4 card straight C2 C3 C4 C5 D4 1848 3S2K 3 card straight and a pair C2 C3 C4 D2 D2 2796 3K2K Full house C2 D2 H2 S4 H4 3744 3S 3 card straight C2 C3 C4 H5 S3 45144 3K 3 of a kind C2 D2 H2 S6 H5 54516 2K2K Two pair C2 D2 H4 S4 H7 2376 2K Pair D7 C7 H2 D6 H3 1202604 X High Card D7 S9 H2 C5 D3 1287648 Yaniv hand classes\\E$"}
 {"rule":"EN_QUOTES","sentence":"^\\QSomeone might possess \"good luck\" which skews chance events towards favouring them, or the opposite with \"bad luck\".\\E$"}
 {"rule":"OXFORD_SPELLING_Z_NOT_S","sentence":"^\\QLikewise, a skilled opponent should be able to neutralise some of the effects that starting with a better combination gives.\\E$"}
+{"rule":"SENT_START_CONJUNCTIVE_LINKING_ADVERB_COMMA","sentence":"^\\QFurther Work.\\E$"}
+{"rule":"SENTENCE_FRAGMENT","sentence":"^\\QAs an RL agent learns to play a game its skill at the game can be said to increase.\\E$"}
+{"rule":"COMP_THAN","sentence":"^\\QThis causes the algorithm to train far slower as shown in \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q.\\E$"}
+{"rule":"IN_TO_VBD","sentence":"^\\QIt is possible to foil an opponent's strategy by holding on to cards you suspect they need.\\E$"}
+{"rule":"ENGLISH_WORD_REPEAT_BEGINNING_RULE","sentence":"^\\QThis project does not use animal or human participants, so there are limited ethical implications.\\E$"}
+{"rule":"SOME_OF_THE","sentence":"^\\QUsing the win rate as the only measure of skill, then the RL model was more skilled than the intermediate model, but could not take full advantage of some of the higher order hand classes.\\E$"}
